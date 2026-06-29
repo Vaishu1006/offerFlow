@@ -1,8 +1,5 @@
 import User from "../models/User.js";
 
-// ===================== COMMON =====================
-
-// @desc Get own profile
 export const getProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
@@ -13,7 +10,6 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
-// @desc Update own profile (only fullName, since that's all the schema has besides email/role)
 export const updateProfile = async (req, res, next) => {
   try {
     const { fullName } = req.body;
@@ -24,7 +20,6 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
-// @desc Change own password
 export const changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -49,7 +44,6 @@ export const changePassword = async (req, res, next) => {
 
 // ===================== ADMIN =====================
 
-// @desc Get all users (filter by role, search by name/email)
 export const getAllUsers = async (req, res, next) => {
   try {
     const { role, search } = req.query;
@@ -70,7 +64,6 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
-// @desc Get single user by id
 export const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -81,7 +74,6 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
-// @desc Update any user (role change, etc.)
 export const updateUser = async (req, res, next) => {
   try {
     const { fullName, role } = req.body;
@@ -98,7 +90,6 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
-// @desc Delete a user
 export const deleteUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);

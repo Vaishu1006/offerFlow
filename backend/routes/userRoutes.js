@@ -6,15 +6,21 @@ import {
   getAllUsers,
   getUserById,
   deleteUser,
+  getProfile,
+  changePassword,
 } from "../controllers/userController.js";
 
 const router = express.Router();
+//for User
+router.get("/me", protectRoute, getProfile);
+router.patch("/me/changePassword", protectRoute, changePassword);
 
-// router.get("/me", protectRoute, me);
 router.put("/me", protectRoute, updateProfile);
 
-router.get("/", protectRoute, checkRole("Admin"), getAllUsers);
-router.get("/:id", protectRoute, checkRole("Admin"), getUserById);
-router.delete("/:id", protectRoute, checkRole("Admin"), deleteUser);
+
+//for Admin
+router.get("/", protectRoute, checkRole("admin"), getAllUsers);
+router.get("/:id", protectRoute, checkRole("admin"), getUserById);
+router.delete("/:id", protectRoute, checkRole("admin"), deleteUser);
 
 export default router;
