@@ -1,5 +1,5 @@
 import express from "express";
-import { protect } from "../middleware/authMiddleware.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
 import {
   analyzeApplication,
   getAnalysisByApplication,
@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.post("/analyze", protect, analyzeApplication);
-router.get("/analysis/:applicationId", protect, getAnalysisByApplication);
+router.post("/analyze", protectRoute, analyzeApplication);
+router.get("/analysis/:applicationId", protectRoute, getAnalysisByApplication);
 
 export default router;

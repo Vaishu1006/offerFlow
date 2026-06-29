@@ -7,6 +7,14 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
+import resumeRoutes from "./routes/resumeRoutes.js";
+import interviewRoutes from "./routes/interviewRoutes.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
 
 const app = express();
 connectDB();

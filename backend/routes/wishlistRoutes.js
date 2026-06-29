@@ -1,5 +1,5 @@
 import express from "express";
-import { protect } from "../middleware/authMiddleware.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
 import {
   addToWishlist,
   getWishlist,
@@ -9,9 +9,9 @@ import {
 
 const router = express.Router();
 
-router.post("/", protect, addToWishlist);
-router.get("/", protect, getWishlist);
-router.put("/:id", protect, updateWishlistStatus);
-router.delete("/:id", protect, removeFromWishlist);
+router.post("/", protectRoute, addToWishlist);
+router.get("/", protectRoute, getWishlist);
+router.put("/:id", protectRoute, updateWishlistStatus);
+router.delete("/:id", protectRoute, removeFromWishlist);
 
 export default router;

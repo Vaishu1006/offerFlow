@@ -1,6 +1,6 @@
 import express from "express";
-import { protect } from "../middleware/authMiddleware.js";
-import restrictTo from "../middleware/roleMiddleware.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
+import {checkRole} from "../middleware/roleMiddleware.js";
 import {
   scheduleInterview,
   getInterviews,
@@ -11,10 +11,10 @@ import {
 
 const router = express.Router();
 
-router.post("/", protect, restrictTo("admin", "mentor"), scheduleInterview);
-router.get("/", protect, getInterviews);
-router.get("/:id", protect, getInterviewById);
-router.put("/:id", protect, restrictTo("admin", "mentor"), updateInterview);
-router.delete("/:id", protect, restrictTo("admin", "mentor"), deleteInterview);
+router.post("/", protectRoute, checkRole("admin", "mentor"), scheduleInterview);
+router.get("/", protectRoute, getInterviews);
+router.get("/:id", protectRoute, getInterviewById);
+router.put("/:id", protectRoute, checkRole("admin", "mentor"), updateInterview);
+router.delete("/:id", protectRoute, checkRole("admin", "mentor"), deleteInterview);
 
 export default router;

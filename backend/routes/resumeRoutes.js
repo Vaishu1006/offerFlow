@@ -1,5 +1,5 @@
 import express from "express";
-import { protect } from "../middleware/authMiddleware.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
 import {
   uploadResume,
   getResumes,
@@ -9,9 +9,9 @@ import {
 
 const router = express.Router();
 
-router.post("/", protect, uploadResume);
-router.get("/", protect, getResumes);
-router.get("/:id", protect, getResumeById);
-router.delete("/:id", protect, deleteResume);
+router.post("/", protectRoute, uploadResume);
+router.get("/", protectRoute, getResumes);
+router.get("/:id", protectRoute, getResumeById);
+router.delete("/:id", protectRoute, deleteResume);
 
 export default router;
