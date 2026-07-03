@@ -32,6 +32,11 @@ const resumeSchema = new mongoose.Schema(
       },
     },
 
+    file_public_id: {              // 🆕 Add karo
+      type: String,
+      required: true,
+    },
+
     version: {
       type: Number,
       required: true,
@@ -47,13 +52,11 @@ const resumeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Prevent duplicate versions for the same user
 resumeSchema.index(
   { user_id: 1, version: 1 },
   { unique: true }
 );
 
-// Optimize fetching user's resumes sorted by latest
 resumeSchema.index({
   user_id: 1,
   createdAt: -1,

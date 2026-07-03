@@ -74,3 +74,5 @@ uploads/
 
 # Admin seed script (contains sensitive setup)
 utils/seedAdmin.js
+
+uploads/

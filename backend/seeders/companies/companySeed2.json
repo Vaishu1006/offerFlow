@@ -1,0 +1,542 @@
+[
+  {
+    "name": "SpaceX",
+    "category": "tech",
+    "location_type": "onsite",
+    "website": "https://www.spacex.com",
+    "career_page": "https://www.spacex.com/careers",
+    "founded_year": 2002,
+    "employee_count": 13000
+  },
+  {
+    "name": "Blue Origin",
+    "category": "tech",
+    "location_type": "onsite",
+    "website": "https://www.blueorigin.com",
+    "career_page": "https://www.blueorigin.com/careers",
+    "founded_year": 2000,
+    "employee_count": 10000
+  },
+  {
+    "name": "Airbnb",
+    "category": "startup",
+    "location_type": "remote",
+    "website": "https://www.airbnb.com",
+    "career_page": "https://careers.airbnb.com",
+    "founded_year": 2008,
+    "employee_count": 6900
+  },
+  {
+    "name": "Pinterest",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://www.pinterest.com",
+    "career_page": "https://www.pinterestcareers.com",
+    "founded_year": 2010,
+    "employee_count": 4600
+  },
+  {
+    "name": "Snap Inc.",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://snap.com",
+    "career_page": "https://careers.snap.com",
+    "founded_year": 2011,
+    "employee_count": 5300
+  },
+  {
+    "name": "LinkedIn",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://www.linkedin.com",
+    "career_page": "https://careers.linkedin.com",
+    "founded_year": 2002,
+    "employee_count": 19000
+  },
+  {
+    "name": "GitHub",
+    "category": "tech",
+    "location_type": "remote",
+    "website": "https://github.com",
+    "career_page": "https://github.careers",
+    "founded_year": 2008,
+    "employee_count": 3500
+  },
+  {
+    "name": "JetBrains",
+    "category": "tech",
+    "location_type": "remote",
+    "website": "https://www.jetbrains.com",
+    "career_page": "https://www.jetbrains.com/careers",
+    "founded_year": 2000,
+    "employee_count": 2200
+  },
+  {
+    "name": "Unity Technologies",
+    "category": "gaming",
+    "location_type": "hybrid",
+    "website": "https://unity.com",
+    "career_page": "https://careers.unity.com",
+    "founded_year": 2004,
+    "employee_count": 7000
+  },
+  {
+    "name": "Epic Games",
+    "category": "gaming",
+    "location_type": "hybrid",
+    "website": "https://www.epicgames.com",
+    "career_page": "https://www.epicgames.com/site/en-US/careers",
+    "founded_year": 1991,
+    "employee_count": 4500
+  },
+  {
+    "name": "Rockstar Games",
+    "category": "gaming",
+    "location_type": "hybrid",
+    "website": "https://www.rockstargames.com",
+    "career_page": "https://www.rockstargames.com/careers",
+    "founded_year": 1998,
+    "employee_count": 6500
+  },
+  {
+    "name": "Valve",
+    "category": "gaming",
+    "location_type": "onsite",
+    "website": "https://www.valvesoftware.com",
+    "career_page": "https://www.valvesoftware.com/en/jobs",
+    "founded_year": 1996,
+    "employee_count": 500
+  },
+  {
+    "name": "CD Projekt",
+    "category": "gaming",
+    "location_type": "hybrid",
+    "website": "https://www.cdprojekt.com",
+    "career_page": "https://www.cdprojekt.com/en/careers",
+    "founded_year": 1994,
+    "employee_count": 1200
+  },
+  {
+    "name": "Supercell",
+    "category": "gaming",
+    "location_type": "hybrid",
+    "website": "https://supercell.com",
+    "career_page": "https://supercell.com/en/careers",
+    "founded_year": 2010,
+    "employee_count": 650
+  },
+  {
+    "name": "Riot Games",
+    "category": "gaming",
+    "location_type": "hybrid",
+    "website": "https://www.riotgames.com",
+    "career_page": "https://www.riotgames.com/en/work-with-us",
+    "founded_year": 2006,
+    "employee_count": 4500
+  },
+  {
+    "name": "Medtronic",
+    "category": "healthcare",
+    "location_type": "hybrid",
+    "website": "https://www.medtronic.com",
+    "career_page": "https://jobs.medtronic.com",
+    "founded_year": 1949,
+    "employee_count": 95000
+  },
+  {
+    "name": "Abbott",
+    "category": "healthcare",
+    "location_type": "hybrid",
+    "website": "https://www.abbott.com",
+    "career_page": "https://www.jobs.abbott",
+    "founded_year": 1888,
+    "employee_count": 114000
+  },
+  {
+    "name": "Philips",
+    "category": "healthcare",
+    "location_type": "hybrid",
+    "website": "https://www.philips.com",
+    "career_page": "https://www.careers.philips.com",
+    "founded_year": 1891,
+    "employee_count": 67000
+  },
+  {
+    "name": "GE HealthCare",
+    "category": "healthcare",
+    "location_type": "hybrid",
+    "website": "https://www.gehealthcare.com",
+    "career_page": "https://careers.gehealthcare.com",
+    "founded_year": 1994,
+    "employee_count": 51000
+  },
+  {
+    "name": "Cerner",
+    "category": "healthcare",
+    "location_type": "hybrid",
+    "website": "https://www.cerner.com",
+    "career_page": "https://careers.oracle.com",
+    "founded_year": 1979,
+    "employee_count": 26000
+  },
+  {
+    "name": "PayPal",
+    "category": "finance",
+    "location_type": "hybrid",
+    "website": "https://www.paypal.com",
+    "career_page": "https://www.paypal.com/careers",
+    "founded_year": 1998,
+    "employee_count": 27000
+  },
+  {
+    "name": "American Express",
+    "category": "finance",
+    "location_type": "hybrid",
+    "website": "https://www.americanexpress.com",
+    "career_page": "https://www.americanexpress.com/careers",
+    "founded_year": 1850,
+    "employee_count": 77000
+  },
+  {
+    "name": "HSBC",
+    "category": "finance",
+    "location_type": "hybrid",
+    "website": "https://www.hsbc.com",
+    "career_page": "https://www.hsbc.com/careers",
+    "founded_year": 1865,
+    "employee_count": 220000
+  },
+  {
+    "name": "Barclays",
+    "category": "finance",
+    "location_type": "hybrid",
+    "website": "https://home.barclays",
+    "career_page": "https://home.barclays/careers",
+    "founded_year": 1690,
+    "employee_count": 90000
+  },
+  {
+    "name": "Standard Chartered",
+    "category": "finance",
+    "location_type": "hybrid",
+    "website": "https://www.sc.com",
+    "career_page": "https://www.sc.com/en/careers",
+    "founded_year": 1969,
+    "employee_count": 85000
+  },
+  {
+    "name": "Stripe India",
+    "category": "finance",
+    "location_type": "hybrid",
+    "website": "https://stripe.com/in",
+    "career_page": "https://stripe.com/jobs",
+    "founded_year": 2016,
+    "employee_count": 1200
+  },
+  {
+    "name": "Wise India",
+    "category": "finance",
+    "location_type": "hybrid",
+    "website": "https://wise.com",
+    "career_page": "https://wise.jobs",
+    "founded_year": 2021,
+    "employee_count": 400
+  },
+  {
+    "name": "Elastic",
+    "category": "tech",
+    "location_type": "remote",
+    "website": "https://www.elastic.co",
+    "career_page": "https://www.elastic.co/careers",
+    "founded_year": 2012,
+    "employee_count": 3200
+  },
+  {
+    "name": "HashiCorp",
+    "category": "tech",
+    "location_type": "remote",
+    "website": "https://www.hashicorp.com",
+    "career_page": "https://www.hashicorp.com/careers",
+    "founded_year": 2012,
+    "employee_count": 2400
+  },
+  {
+    "name": "Confluent",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://www.confluent.io",
+    "career_page": "https://www.confluent.io/careers",
+    "founded_year": 2014,
+    "employee_count": 3000
+  },
+  {
+    "name": "OpenAI",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://openai.com",
+    "career_page": "https://openai.com/careers",
+    "founded_year": 2015,
+    "employee_count": 4500
+  },
+  {
+    "name": "Anthropic",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://www.anthropic.com",
+    "career_page": "https://www.anthropic.com/careers",
+    "founded_year": 2021,
+    "employee_count": 1200
+  },
+  {
+    "name": "Cohere",
+    "category": "ai",
+    "location_type": "remote",
+    "website": "https://cohere.com",
+    "career_page": "https://cohere.com/careers",
+    "founded_year": 2019,
+    "employee_count": 500
+  },
+  {
+    "name": "Mistral AI",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://mistral.ai",
+    "career_page": "https://mistral.ai/careers",
+    "founded_year": 2023,
+    "employee_count": 300
+  },
+  {
+    "name": "Perplexity AI",
+    "category": "ai",
+    "location_type": "remote",
+    "website": "https://www.perplexity.ai",
+    "career_page": "https://www.perplexity.ai/careers",
+    "founded_year": 2022,
+    "employee_count": 250
+  },
+  {
+    "name": "Hugging Face",
+    "category": "ai",
+    "location_type": "remote",
+    "website": "https://huggingface.co",
+    "career_page": "https://huggingface.co/jobs",
+    "founded_year": 2016,
+    "employee_count": 400
+  },
+  {
+    "name": "Scale AI",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://scale.com",
+    "career_page": "https://scale.com/careers",
+    "founded_year": 2016,
+    "employee_count": 900
+  },
+  {
+    "name": "xAI",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://x.ai",
+    "career_page": "https://x.ai/careers",
+    "founded_year": 2023,
+    "employee_count": 250
+  },
+  {
+    "name": "DeepMind",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://deepmind.google",
+    "career_page": "https://deepmind.google/careers",
+    "founded_year": 2010,
+    "employee_count": 2500
+  },
+  {
+    "name": "Stability AI",
+    "category": "ai",
+    "location_type": "remote",
+    "website": "https://stability.ai",
+    "career_page": "https://stability.ai/careers",
+    "founded_year": 2019,
+    "employee_count": 350
+  },
+  {
+    "name": "Infosys",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.infosys.com",
+    "career_page": "https://www.infosys.com/careers",
+    "founded_year": 1981,
+    "employee_count": 317000
+  },
+  {
+    "name": "Tata Consultancy Services",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.tcs.com",
+    "career_page": "https://www.tcs.com/careers",
+    "founded_year": 1968,
+    "employee_count": 607000
+  },
+  {
+    "name": "Wipro",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.wipro.com",
+    "career_page": "https://careers.wipro.com",
+    "founded_year": 1945,
+    "employee_count": 234000
+  },
+  {
+    "name": "HCLTech",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.hcltech.com",
+    "career_page": "https://www.hcltech.com/careers",
+    "founded_year": 1976,
+    "employee_count": 227000
+  },
+  {
+    "name": "DXC Technology",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://dxc.com",
+    "career_page": "https://careers.dxc.com",
+    "founded_year": 2017,
+    "employee_count": 130000
+  },
+  {
+    "name": "Mphasis",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.mphasis.com",
+    "career_page": "https://careers.mphasis.com",
+    "founded_year": 1998,
+    "employee_count": 32000
+  },
+  {
+    "name": "Hexaware Technologies",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://hexaware.com",
+    "career_page": "https://hexaware.com/careers",
+    "founded_year": 1990,
+    "employee_count": 31000
+  },
+  {
+    "name": "Virtusa",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.virtusa.com",
+    "career_page": "https://www.virtusa.com/careers",
+    "founded_year": 1996,
+    "employee_count": 38000
+  },
+  {
+    "name": "Thoughtworks",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.thoughtworks.com",
+    "career_page": "https://www.thoughtworks.com/careers",
+    "founded_year": 1993,
+    "employee_count": 12000
+  },
+  {
+    "name": "EPAM Systems",
+    "category": "consulting",
+    "location_type": "hybrid",
+    "website": "https://www.epam.com",
+    "career_page": "https://www.epam.com/careers",
+    "founded_year": 1993,
+    "employee_count": 61000
+  },
+  {
+    "name": "Nutanix",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://www.nutanix.com",
+    "career_page": "https://www.nutanix.com/company/careers",
+    "founded_year": 2009,
+    "employee_count": 7000
+  },
+  {
+    "name": "Akamai Technologies",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://www.akamai.com",
+    "career_page": "https://www.akamai.com/careers",
+    "founded_year": 1998,
+    "employee_count": 10000
+  },
+  {
+    "name": "Okta",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://www.okta.com",
+    "career_page": "https://www.okta.com/company/careers",
+    "founded_year": 2009,
+    "employee_count": 6500
+  },
+  {
+    "name": "Splunk",
+    "category": "tech",
+    "location_type": "hybrid",
+    "website": "https://www.splunk.com",
+    "career_page": "https://www.splunk.com/en_us/careers.html",
+    "founded_year": 2003,
+    "employee_count": 7000
+  },
+  {
+    "name": "Twilio",
+    "category": "tech",
+    "location_type": "remote",
+    "website": "https://www.twilio.com",
+    "career_page": "https://www.twilio.com/company/jobs",
+    "founded_year": 2008,
+    "employee_count": 6500
+  },
+  {
+    "name": "GitLab Inc.",
+    "category": "tech",
+    "location_type": "remote",
+    "website": "https://about.gitlab.com",
+    "career_page": "https://about.gitlab.com/jobs",
+    "founded_year": 2014,
+    "employee_count": 2200
+  },
+  {
+    "name": "Automation Anywhere",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://www.automationanywhere.com",
+    "career_page": "https://www.automationanywhere.com/company/careers",
+    "founded_year": 2003,
+    "employee_count": 2800
+  },
+  {
+    "name": "UiPath",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://www.uipath.com",
+    "career_page": "https://www.uipath.com/careers",
+    "founded_year": 2005,
+    "employee_count": 4000
+  },
+  {
+    "name": "DataRobot",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://www.datarobot.com",
+    "career_page": "https://www.datarobot.com/careers",
+    "founded_year": 2012,
+    "employee_count": 1000
+  },
+  {
+    "name": "C3 AI",
+    "category": "ai",
+    "location_type": "hybrid",
+    "website": "https://c3.ai",
+    "career_page": "https://c3.ai/careers",
+    "founded_year": 2009,
+    "employee_count": 900
+  }
+]

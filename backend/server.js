@@ -15,6 +15,8 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
+import companyRoutes from "./routes/companyRoutes.js";
+import { errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
 connectDB();
@@ -32,5 +34,8 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use('/api/companies', companyRoutes);
+
+app.use(errorHandler);
 
 app.listen(process.env.PORT || 5000, () => console.log('Server running'));

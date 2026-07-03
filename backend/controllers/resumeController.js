@@ -1,32 +1,48 @@
 import Resume from "../models/Resume.js";
+import cloudinary from "../config/cloudinary.js";
 
-// @desc    Upload new resume (creates a new version for the user)
-// @route   POST /api/resumes
-// @access  Private (student)
+import fs from "fs";
+
+
 export const uploadResume = async (req, res, next) => {
   try {
-    const { resume_name, file_url, category } = req.body;
+    const { resume_name, category } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "Please upload a resume file" });
+    }
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "internship-tracker/resumes",   // 👈 sirf yahi line change hui
+      resource_type: "raw",
+    });
+    console.log("Local file path:", req.file.path);
+    fs.unlinkSync(req.file.path);
 
-    const lastResume = await Resume.findOne({ user_id: req.user.id }).sort({ version: -1 });
+    const lastResume = await Resume.findOne({
+      user_id: req.user.id,
+      category,
+    }).sort({ version: -1 });
+
     const nextVersion = lastResume ? lastResume.version + 1 : 1;
 
     const resume = await Resume.create({
       user_id: req.user.id,
       resume_name,
-      file_url,
+      file_url: result.secure_url,
+      file_public_id: result.public_id,
       category,
       version: nextVersion,
     });
 
     res.status(201).json({ success: true, resume });
-  } catch (error) {
-    next(error);
-  }
+    console.log("UPLOAD SUCCESS");
+  console.log(result);
+  } catch (err) {
+    console.log("FULL CLOUDINARY ERROR:");
+  console.dir(err, { depth: null });
+  throw err;
+}
 };
 
-// @desc    Get all resumes of logged-in user (or any user if admin)
-// @route   GET /api/resumes?user_id=...
-// @access  Private
 export const getResumes = async (req, res, next) => {
   try {
     const userId = req.user.role === "admin" && req.query.user_id ? req.query.user_id : req.user.id;
@@ -38,9 +54,6 @@ export const getResumes = async (req, res, next) => {
   }
 };
 
-// @desc    Get single resume by id
-// @route   GET /api/resumes/:id
-// @access  Private
 export const getResumeById = async (req, res, next) => {
   try {
     const resume = await Resume.findById(req.params.id);
@@ -48,7 +61,7 @@ export const getResumeById = async (req, res, next) => {
       return res.status(404).json({ success: false, message: "Resume not found" });
     }
 
-    if (req.user.role === "student" && resume.user_id.toString() !== req.user.id) {
+    if (req.user.role !== "admin" && resume.user_id.toString() !== req.user.id) {
       return res.status(403).json({ success: false, message: "Access denied" });
     }
 
@@ -58,9 +71,6 @@ export const getResumeById = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a resume version
-// @route   DELETE /api/resumes/:id
-// @access  Private (owner or admin)
 export const deleteResume = async (req, res, next) => {
   try {
     const resume = await Resume.findById(req.params.id);
@@ -68,13 +78,19 @@ export const deleteResume = async (req, res, next) => {
       return res.status(404).json({ success: false, message: "Resume not found" });
     }
 
-    if (req.user.role === "student" && resume.user_id.toString() !== req.user.id) {
+    if (req.user.role !== "admin" && resume.user_id.toString() !== req.user.id) {
       return res.status(403).json({ success: false, message: "Access denied" });
     }
 
-    await resume.deleteOne();
+    await cloudinary.uploader.destroy(resume.file_public_id, { resource_type: "raw" });
+    if (resume.file_public_id) {
+  await cloudinary.uploader.destroy(resume.file_public_id, { resource_type: "raw" });
+}
+await resume.deleteOne();
+
     res.status(200).json({ success: true, message: "Resume deleted" });
   } catch (error) {
     next(error);
   }
 };
+

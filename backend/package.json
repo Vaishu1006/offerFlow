@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed:companies": "node seeders/seedCompanies.js",
+    "seed:companies:fresh": "node seeders/seedCompanies.js --fresh"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +21,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
     "express-validator": "^7.3.2",
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
