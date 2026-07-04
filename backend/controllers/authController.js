@@ -7,20 +7,29 @@ import jwt from "jsonwebtoken";
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
     return res.status(httpStatus.BAD_REQUEST).json({
-      message: "Please provide email and password."
+      message: "Please provide email and password.",
     });
   }
+
   try {
     const user = await User.findOne({ email }).select("+password");
+
     if (!user) {
-      return res.status(httpStatus.NOT_FOUND).json({ message: "User not found." });
+      return res.status(httpStatus.NOT_FOUND).json({
+        message: "User not found.",
+      });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Use the model method
+    const isMatch = await user.matchPassword(password);
+
     if (!isMatch) {
-      return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid credentials." });
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        message: "Invalid credentials.",
+      });
     }
 
     const token = generateToken(user._id, user.role, res);
@@ -33,42 +42,53 @@ const login = async (req, res, next) => {
         id: user._id,
         fullName: user.fullName,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
-  } catch (e) {
-    next(e); // pass to errorMiddleware.js instead of handling inline
+  } catch (error) {
+    next(error);
   }
 };
 
 const register = async (req, res, next) => {
   const { fullName, email, password, role } = req.body;
+
   if (!fullName || !email || !password) {
     return res.status(httpStatus.BAD_REQUEST).json({
-      message: "Please provide all required fields."
+      message: "Please provide all required fields.",
     });
   }
+
   try {
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
-      return res.status(httpStatus.CONFLICT).json({ message: "User already exists." });
+      return res.status(httpStatus.CONFLICT).json({
+        message: "User already exists.",
+      });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // ❌ Do NOT hash here.
+    // The User model's pre("save") middleware will hash it automatically.
     const user = await User.create({
       fullName,
       email,
-      password: hashedPassword,
-      role: role || "Student"
+      password,
+      role: role || "student",
     });
 
     return res.status(httpStatus.CREATED).json({
       success: true,
       message: "User registered successfully.",
-      user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role }
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
     });
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 };
 

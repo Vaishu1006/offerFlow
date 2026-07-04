@@ -43,52 +43,116 @@ export const uploadResume = async (req, res, next) => {
 }
 };
 
+// @desc    Get resumes
+// @route   GET /api/resumes
+// @access  Private
 export const getResumes = async (req, res, next) => {
   try {
-    const userId = req.user.role === "admin" && req.query.user_id ? req.query.user_id : req.user.id;
+    const query = {};
 
-    const resumes = await Resume.find({ user_id: userId }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, count: resumes.length, resumes });
+    // Student can view only their own resumes
+    if (req.user.role === "student") {
+      query.user_id = req.user._id;
+    }
+
+    // Admin can filter resumes by a specific user
+    if (req.user.role === "admin" && req.query.user_id) {
+      query.user_id = req.query.user_id;
+    }
+
+    const resumes = await Resume.find(query)
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: resumes.length,
+      resumes,
+    });
+
   } catch (error) {
     next(error);
   }
 };
 
+// @desc    Get a single resume by ID
+// @route   GET /api/resumes/:id
+// @access  Private
 export const getResumeById = async (req, res, next) => {
   try {
-    const resume = await Resume.findById(req.params.id);
+    let resume;
+
+    // Student can access only their own resume
+    if (req.user.role === "student") {
+      resume = await Resume.findOne({
+        _id: req.params.id,
+        user_id: req.user._id,
+      });
+    }
+
+    // Admin can access any resume
+    else {
+      resume = await Resume.findById(req.params.id);
+    }
+
     if (!resume) {
-      return res.status(404).json({ success: false, message: "Resume not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found.",
+      });
     }
 
-    if (req.user.role !== "admin" && resume.user_id.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, message: "Access denied" });
-    }
+    return res.status(200).json({
+      success: true,
+      resume,
+    });
 
-    res.status(200).json({ success: true, resume });
   } catch (error) {
     next(error);
   }
 };
 
+// @desc    Delete a resume
+// @route   DELETE /api/resumes/:id
+// @access  Private
 export const deleteResume = async (req, res, next) => {
   try {
-    const resume = await Resume.findById(req.params.id);
+    let resume;
+
+    // Student can delete only their own resume
+    if (req.user.role === "student") {
+      resume = await Resume.findOne({
+        _id: req.params.id,
+        user_id: req.user._id,
+      });
+    }
+
+    // Admin can delete any resume
+    else {
+      resume = await Resume.findById(req.params.id);
+    }
+
     if (!resume) {
-      return res.status(404).json({ success: false, message: "Resume not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found.",
+      });
     }
 
-    if (req.user.role !== "admin" && resume.user_id.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, message: "Access denied" });
-    }
-
-    await cloudinary.uploader.destroy(resume.file_public_id, { resource_type: "raw" });
+    // Delete file from Cloudinary
     if (resume.file_public_id) {
-  await cloudinary.uploader.destroy(resume.file_public_id, { resource_type: "raw" });
-}
-await resume.deleteOne();
+      await cloudinary.uploader.destroy(resume.file_public_id, {
+        resource_type: "raw",
+      });
+    }
 
-    res.status(200).json({ success: true, message: "Resume deleted" });
+    // Delete document from MongoDB
+    await resume.deleteOne();
+
+    return res.status(200).json({
+      success: true,
+      message: "Resume deleted successfully.",
+    });
+
   } catch (error) {
     next(error);
   }

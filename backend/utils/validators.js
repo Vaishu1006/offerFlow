@@ -117,3 +117,191 @@ export const validateUpdateApplication = [
 
   handleValidationErrors,
 ];
+
+// ====================== INTERVIEW VALIDATOR ======================
+
+export const interviewValidator = [
+
+  // Validate application_id
+  // Why?
+  // Every interview must belong to an existing application.
+  body("application_id")
+    .notEmpty()
+    .withMessage("Application ID is required.")
+    .isMongoId()
+    .withMessage("Invalid Application ID."),
+
+  // Validate interview_date
+  // Why?
+  // Every interview must have a valid scheduled date.
+  body("interview_date")
+    .notEmpty()
+    .withMessage("Interview date is required.")
+    .isISO8601()
+    .withMessage("Invalid interview date.")
+    .toDate(),
+
+  // Validate round_type
+  // Why?
+  // Prevent users from sending random interview round names.
+  body("round_type")
+    .notEmpty()
+    .withMessage("Round type is required.")
+    .isIn([
+      "OA",
+      "Interview Round 1",
+      "Interview Round 2",
+      "System Design",
+      "Managerial",
+      "HR Round",
+      "Other",
+    ])
+    .withMessage("Invalid round type."),
+
+  // Validate custom_round_name
+  // Why?
+  // Required only when round_type = "Other".
+  // Also prevents sending custom_round_name for predefined rounds.
+  body("custom_round_name")
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage("Custom round name cannot exceed 100 characters.")
+    .custom((value, { req }) => {
+
+      if (req.body.round_type === "Other" && !value) {
+        throw new Error(
+          "Custom round name is required when round type is 'Other'."
+        );
+      }
+
+      if (req.body.round_type !== "Other" && value) {
+        throw new Error(
+          "Custom round name should only be provided when round type is 'Other'."
+        );
+      }
+
+      return true;
+    }),
+
+  // Validate meeting_url
+  // Why?
+  // Meeting URL is optional but if provided, it must be valid.
+  body("meeting_url")
+    .optional()
+    .isURL()
+    .withMessage("Invalid meeting URL."),
+
+  // Validate interview status
+  // Why?
+  // Prevent invalid status values.
+  body("status")
+    .optional()
+    .isIn([
+      "scheduled",
+      "completed",
+      "passed",
+      "failed",
+    ])
+    .withMessage("Invalid interview status."),
+
+  // Validate interview notes
+  // Why?
+  // Keeps notes meaningful while avoiding huge text.
+  body("interview_notes")
+    .optional()
+    .trim()
+    .isLength({
+      min: 10,
+      max: 2000,
+    })
+    .withMessage(
+      "Interview notes must be between 10 and 2000 characters."
+    ),
+];
+
+export const updateInterviewValidator = [
+
+  // application_id (optional in update)
+  body("application_id")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid Application ID."),
+
+  // interview_date (optional)
+  body("interview_date")
+    .optional()
+    .isISO8601()
+    .withMessage("Invalid interview date format.")
+    .toDate(),
+
+  // round_type (optional)
+  body("round_type")
+    .optional()
+    .isIn([
+      "OA",
+      "Interview Round 1",
+      "Interview Round 2",
+      "System Design",
+      "Managerial",
+      "HR Round",
+      "Other",
+    ])
+    .withMessage("Invalid round type."),
+
+  // custom_round_name validation logic
+  // Why?
+  // Same rule as create:
+  // - required only when round_type = "Other"
+  // - not allowed otherwise
+  body("custom_round_name")
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage("Custom round name cannot exceed 100 characters.")
+    .custom((value, { req }) => {
+
+      if (req.body.round_type === "Other" && !value) {
+        throw new Error(
+          "Custom round name is required when round type is 'Other'."
+        );
+      }
+
+      if (req.body.round_type !== "Other" && value) {
+        throw new Error(
+          "Custom round name is only allowed when round type is 'Other'."
+        );
+      }
+
+      return true;
+    }),
+
+  // meeting_url (optional)
+  body("meeting_url")
+    .optional()
+    .isURL()
+    .withMessage("Invalid meeting URL."),
+
+  // status (optional)
+  body("status")
+    .optional()
+    .isIn([
+      "scheduled",
+      "completed",
+      "passed",
+      "failed",
+    ])
+    .withMessage("Invalid interview status."),
+
+  // interview_notes (optional)
+  body("interview_notes")
+    .optional()
+    .trim()
+    .isLength({
+      min: 10,
+      max: 2000,
+    })
+    .withMessage(
+      "Interview notes must be between 10 and 2000 characters."
+    ),
+];

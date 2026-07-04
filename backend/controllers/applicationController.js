@@ -27,7 +27,7 @@ export const createApplication = async (req, res, next) => {
     if (!resume) {
       return res.status(404).json({
         success: false,
-        message: "Selected resume not found.",
+        message: "Selected resume not found or doesn't belong to you.",
       });
     }
 
@@ -42,12 +42,12 @@ export const createApplication = async (req, res, next) => {
       if (!company) {
         return res.status(404).json({
           success: false,
-          message: "Company not found",
+          message: "Company not found.",
         });
       }
     }
 
-    // User typed a company name
+    // User entered a new company
     else if (companyName) {
       const trimmedName = companyName.trim();
 
@@ -58,13 +58,9 @@ export const createApplication = async (req, res, next) => {
         },
       });
 
-      // Existing company
       if (company) {
         approvalStatus = "Approved";
-      }
-
-      // New company request
-      else {
+      } else {
         approvalStatus = "Pending";
 
         requestedCompany = {
@@ -73,18 +69,15 @@ export const createApplication = async (req, res, next) => {
           location_type: location_type || "onsite",
         };
       }
-    }
-
-    // Neither companyId nor companyName received
-    else {
+    } else {
       return res.status(400).json({
         success: false,
-        message: "companyId or companyName is required",
+        message: "Either companyId or companyName is required.",
       });
     }
 
     const application = await Application.create({
-      user_id: req.user._id,
+      user_id: req.user._id, // Logged-in user becomes the owner
       company_id: company ? company._id : null,
       requested_company: requestedCompany,
       approval_status: approvalStatus,
@@ -96,13 +89,11 @@ export const createApplication = async (req, res, next) => {
       status: "Applied",
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       application,
     });
-
   } catch (error) {
-
     if (error.code === 11000) {
       return res.status(409).json({
         success: false,
@@ -114,28 +105,50 @@ export const createApplication = async (req, res, next) => {
   }
 };
 
-// @desc    Get all applications (student sees own, admin can filter by user_id)
+// @desc    Get applications
 // @route   GET /api/applications
 // @access  Private
 export const getApplications = async (req, res, next) => {
   try {
     const query = {};
 
+    // -----------------------------
+    // Ownership Filter
+    // -----------------------------
+
+    // Student can only view their own applications
     if (req.user.role === "student") {
-      query.user_id = req.user.id;
-    } else if (req.query.user_id) {
+      query.user_id = req.user._id;
+    }
+
+    // Admin can filter applications by any user
+    if (req.user.role === "admin" && req.query.user_id) {
       query.user_id = req.query.user_id;
     }
 
-    if (req.query.status) query.status = req.query.status;
-    if (req.query.company_id) query.company_id = req.query.company_id;
+    // -----------------------------
+    // Optional Filters
+    // -----------------------------
+
+    if (req.query.status) {
+      query.status = req.query.status;
+    }
+
+    if (req.query.company_id) {
+      query.company_id = req.query.company_id;
+    }
 
     const applications = await Application.find(query)
       .populate("company_id", "name category location_type")
       .populate("resume_id", "resume_name version")
       .sort({ date_applied: -1 });
 
-    res.status(200).json({ success: true, count: applications.length, applications });
+    return res.status(200).json({
+      success: true,
+      count: applications.length,
+      applications,
+    });
+
   } catch (error) {
     next(error);
   }
@@ -146,45 +159,93 @@ export const getApplications = async (req, res, next) => {
 // @access  Private
 export const getApplicationById = async (req, res, next) => {
   try {
-    const application = await Application.findById(req.params.id)
-      .populate("company_id")
-      .populate("resume_id")
-      .populate("user_id", "fullName email");
+    let application;
+
+    // Student can only access their own application
+    if (req.user.role === "student") {
+      application = await Application.findOne({
+        _id: req.params.id,
+        user_id: req.user._id,
+      })
+        .populate("company_id")
+        .populate("resume_id");
+    }
+
+    // Admin can access any application
+    else {
+      application = await Application.findById(req.params.id)
+        .populate("company_id")
+        .populate("resume_id")
+        .populate("user_id", "fullName email");
+    }
 
     if (!application) {
-      return res.status(404).json({ success: false, message: "Application not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Application not found.",
+      });
     }
 
-    if (req.user.role === "student" && application.user_id._id.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, message: "Access denied" });
-    }
+    return res.status(200).json({
+      success: true,
+      application,
+    });
 
-    res.status(200).json({ success: true, application });
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Update application status (Applied -> Interview -> Selected/Rejected etc.)
+// @desc    Update application status
 // @route   PATCH /api/applications/:id/status
 // @access  Private
 export const updateApplicationStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
 
-    const application = await Application.findById(req.params.id);
-    if (!application) {
-      return res.status(404).json({ success: false, message: "Application not found" });
+    let application;
+
+    // Student can update only their own application
+    if (req.user.role === "student") {
+      application = await Application.findOne({
+        _id: req.params.id,
+        user_id: req.user._id,
+      });
     }
 
-    if (req.user.role === "student" && application.user_id.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, message: "Access denied" });
+    // Admin can update any application
+    else {
+      application = await Application.findById(req.params.id);
+    }
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found.",
+      });
+    }
+
+    // Students can manually update only final statuses
+    if (req.user.role === "student") {
+      const allowedStatuses = ["Selected", "Rejected"];
+
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Only Selected and Rejected can be updated manually. Other statuses are managed automatically.",
+        });
+      }
     }
 
     application.status = status;
+
     await application.save();
 
-    res.status(200).json({ success: true, application });
+    return res.status(200).json({
+      success: true,
+      application,
+    });
   } catch (error) {
     next(error);
   }
@@ -195,23 +256,49 @@ export const updateApplicationStatus = async (req, res, next) => {
 // @access  Private
 export const updateApplication = async (req, res, next) => {
   try {
-    const allowedFields = ["role", "job_link", "location", "salary"];
-    const application = await Application.findById(req.params.id);
+    const allowedFields = [
+      "role",
+      "job_link",
+      "location",
+      "salary",
+    ];
+
+    let application;
+
+    // Student can update only their own application
+    if (req.user.role === "student") {
+      application = await Application.findOne({
+        _id: req.params.id,
+        user_id: req.user._id,
+      });
+    }
+
+    // Admin can update any application
+    else {
+      application = await Application.findById(req.params.id);
+    }
 
     if (!application) {
-      return res.status(404).json({ success: false, message: "Application not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Application not found.",
+      });
     }
 
-    if (req.user.role === "student" && application.user_id.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, message: "Access denied" });
-    }
-
+    // Update only allowed fields
     allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined) application[field] = req.body[field];
+      if (req.body[field] !== undefined) {
+        application[field] = req.body[field];
+      }
     });
 
     await application.save();
-    res.status(200).json({ success: true, application });
+
+    return res.status(200).json({
+      success: true,
+      application,
+    });
+
   } catch (error) {
     next(error);
   }
@@ -222,17 +309,35 @@ export const updateApplication = async (req, res, next) => {
 // @access  Private
 export const deleteApplication = async (req, res, next) => {
   try {
-    const application = await Application.findById(req.params.id);
-    if (!application) {
-      return res.status(404).json({ success: false, message: "Application not found" });
+    let application;
+
+    // Student can delete only their own application
+    if (req.user.role === "student") {
+      application = await Application.findOne({
+        _id: req.params.id,
+        user_id: req.user._id,
+      });
     }
 
-    if (req.user.role === "student" && application.user_id.toString() !== req.user.id) {
-      return res.status(403).json({ success: false, message: "Access denied" });
+    // Admin can delete any application
+    else {
+      application = await Application.findById(req.params.id);
+    }
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found.",
+      });
     }
 
     await application.deleteOne();
-    res.status(200).json({ success: true, message: "Application deleted" });
+
+    return res.status(200).json({
+      success: true,
+      message: "Application deleted successfully.",
+    });
+
   } catch (error) {
     next(error);
   }
