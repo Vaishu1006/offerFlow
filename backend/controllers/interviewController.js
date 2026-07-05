@@ -1,7 +1,7 @@
 import Interview from "../models/Interview.js";
 import Application from "../models/Application.js";
-
-// @desc    Schedule a new interview round
+import Notification from "../models/Notification.js";
+/// @desc    Schedule a new interview round
 // @route   POST /api/interviews
 // @access  Private
 export const scheduleInterview = async (req, res, next) => {
@@ -59,6 +59,7 @@ export const scheduleInterview = async (req, res, next) => {
       });
     }
 
+    // Create interview
     const interview = await Interview.create({
       application_id,
       interview_date,
@@ -81,12 +82,37 @@ export const scheduleInterview = async (req, res, next) => {
       await application.save();
     }
 
+    // Create notification
+    try {
+  console.log("🔔 Notification block reached");
+  console.log("user_id:", application.user_id);
+  console.log("interview_id:", interview._id);
+  console.log("application_id:", application._id);
+  
+  const notif = await Notification.create({
+    user_id: application.user_id,
+    type: "interview_scheduled",
+    title: "Interview Scheduled",
+    message: `Your ${round_type} has been scheduled on ${new Date(
+      interview_date
+    ).toLocaleString()}.`,
+    interview_id: interview._id,
+    application_id: application._id,
+  });
+  
+  console.log("✅ Notification saved:", notif._id);
+} catch (err) {
+  console.error("❌ Notification Error Message:", err.message);
+  console.error("❌ Notification Error Name:", err.name);
+  console.error("❌ Full Error:", err);
+}
+    
+    console.log("After notification");
     return res.status(201).json({
       success: true,
       message: "Interview scheduled successfully.",
       interview,
     });
-
   } catch (error) {
     next(error);
   }
@@ -235,13 +261,10 @@ export const updateInterview = async (req, res, next) => {
 
     let interview;
 
-    // Student can update only their own interview
     if (req.user.role === "student") {
       interview = await Interview.findById(req.params.id).populate({
         path: "application_id",
-        match: {
-          user_id: req.user._id,
-        },
+        match: { user_id: req.user._id },
       });
 
       if (!interview || !interview.application_id) {
@@ -250,11 +273,9 @@ export const updateInterview = async (req, res, next) => {
           message: "Interview not found.",
         });
       }
-    }
-
-    // Admin can update any interview
-    else {
-      interview = await Interview.findById(req.params.id);
+    } else {
+      interview = await Interview.findById(req.params.id)
+        .populate("application_id");  // ✅ admin case mein bhi populate
 
       if (!interview) {
         return res.status(404).json({
@@ -264,7 +285,6 @@ export const updateInterview = async (req, res, next) => {
       }
     }
 
-    // Update only allowed fields
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
         interview[field] = req.body[field];
@@ -273,12 +293,28 @@ export const updateInterview = async (req, res, next) => {
 
     await interview.save();
 
+    // ✅ Corrected notification
+    try {
+      await Notification.create({
+        user_id: interview.application_id.user_id,
+        type: "interview_updated",
+        title: "Interview Updated",
+        message: `Your ${interview.round_type} has been updated on ${new Date(
+          interview.interview_date
+        ).toLocaleString()}.`,
+        interview_id: interview._id,
+        application_id: interview.application_id._id,
+      });
+      console.log("✅ Notification saved");
+    } catch (err) {
+      console.error("❌ Notification Error:", err.message);
+    }
+
     return res.status(200).json({
       success: true,
       message: "Interview updated successfully.",
       interview,
     });
-
   } catch (error) {
     next(error);
   }
@@ -310,7 +346,9 @@ export const deleteInterview = async (req, res, next) => {
 
     // Admin can delete any interview
     else {
-      interview = await Interview.findById(req.params.id);
+      interview = await Interview.findById(req.params.id).populate(
+        "application_id"
+      );
 
       if (!interview) {
         return res.status(404).json({
@@ -320,6 +358,21 @@ export const deleteInterview = async (req, res, next) => {
       }
     }
 
+    // Create notification before deleting interview
+    await Notification.create({
+      user_id: interview.application_id.user_id,
+      type: "interview_cancelled",
+      title: "Interview Cancelled",
+      message: `Your ${
+        interview.round_type
+      } scheduled on ${new Date(
+        interview.interview_date
+      ).toLocaleString()} has been cancelled.`,
+      interview_id: interview._id,
+      application_id: interview.application_id._id,
+    });
+
+    // Delete interview
     await interview.deleteOne();
 
     return res.status(200).json({

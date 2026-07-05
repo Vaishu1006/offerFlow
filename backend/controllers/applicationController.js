@@ -88,7 +88,6 @@ export const createApplication = async (req, res, next) => {
       salary,
       status: "Applied",
     });
-
     return res.status(201).json({
       success: true,
       application,

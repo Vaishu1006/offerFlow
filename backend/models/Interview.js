@@ -76,6 +76,10 @@ const interviewSchema = new mongoose.Schema(
       minlength: 10,
       maxlength: 2000,
     },
+    reminder_sent:{
+      type:Boolean,
+      default:false
+    }
   },
   {
     timestamps: true,

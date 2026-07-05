@@ -17,6 +17,7 @@ import aiRoutes from "./routes/aiRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
+import "./services/cronServices.js";
 
 const app = express();
 connectDB();

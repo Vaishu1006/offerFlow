@@ -1,8 +1,8 @@
 import express from "express";
+
 import { protectRoute } from "../middleware/authMiddleware.js";
-import {checkRole} from "../middleware/roleMiddleware.js";
+
 import {
-  createNotification,
   getMyNotifications,
   markAsRead,
   deleteNotification,
@@ -10,9 +10,40 @@ import {
 
 const router = express.Router();
 
-router.post("/", protectRoute, checkRole("admin"), createNotification);
-router.get("/", protectRoute, getMyNotifications);
-router.put("/:id/read", protectRoute, markAsRead);
-router.delete("/:id", protectRoute, deleteNotification);
+/**
+ * ==========================================
+ * GET ALL NOTIFICATIONS
+ * GET /api/notifications
+ * ==========================================
+ */
+router.get(
+  "/",
+  protectRoute,
+  getMyNotifications
+);
+
+/**
+ * ==========================================
+ * MARK NOTIFICATION AS READ
+ * PATCH /api/notifications/:id/read
+ * ==========================================
+ */
+router.patch(
+  "/:id/read",
+  protectRoute,
+  markAsRead
+);
+
+/**
+ * ==========================================
+ * DELETE NOTIFICATION
+ * DELETE /api/notifications/:id
+ * ==========================================
+ */
+router.delete(
+  "/:id",
+  protectRoute,
+  deleteNotification
+);
 
 export default router;
