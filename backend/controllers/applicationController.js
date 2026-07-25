@@ -1,6 +1,7 @@
 import Company from "../models/Company.js";
 import Application from "../models/Application.js";
 import Resume from "../models/Resume.js";
+import Notification from "../models/Notification.js"
 // @desc    Create a new application (select existing company OR add new one)
 // @route   POST /api/applications
 // @access  Private (Student)
@@ -204,16 +205,12 @@ export const updateApplicationStatus = async (req, res, next) => {
 
     let application;
 
-    // Student can update only their own application
     if (req.user.role === "student") {
       application = await Application.findOne({
         _id: req.params.id,
         user_id: req.user._id,
       });
-    }
-
-    // Admin can update any application
-    else {
+    } else {
       application = await Application.findById(req.params.id);
     }
 
@@ -224,10 +221,8 @@ export const updateApplicationStatus = async (req, res, next) => {
       });
     }
 
-    // Students can manually update only final statuses
     if (req.user.role === "student") {
       const allowedStatuses = ["Selected", "Rejected"];
-
       if (!allowedStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
@@ -238,8 +233,17 @@ export const updateApplicationStatus = async (req, res, next) => {
     }
 
     application.status = status;
-
     await application.save();
+
+    // 👇 Naya block — Rejected hone pe interview-related notifications clean up karo
+    if (status === "Rejected") {
+      await Notification.deleteMany({
+        application_id: application._id,
+        type: {
+          $in: ["interview_scheduled", "interview_updated", "interview_reminder"],
+        },
+      });
+    }
 
     return res.status(200).json({
       success: true,

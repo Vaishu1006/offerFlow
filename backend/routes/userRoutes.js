@@ -8,6 +8,7 @@ import {
   deleteUser,
   getProfile,
   changePassword,
+  updateUser
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.put("/me", protectRoute, updateProfile);
 //for Admin
 router.get("/", protectRoute, checkRole("admin"), getAllUsers);
 router.get("/:id", protectRoute, checkRole("admin"), getUserById);
+router.put("/:id", protectRoute, checkRole("admin"), updateUser);
 router.delete("/:id", protectRoute, checkRole("admin"), deleteUser);
 
 export default router;

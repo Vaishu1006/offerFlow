@@ -4,6 +4,7 @@ dotenv.config();
 import express from "express";
 
 import cors from "cors";
+import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -18,13 +19,22 @@ import analyticsRoutes from "./routes/analyticsRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 import "./services/cronServices.js";
+import { generalLimiter } from "./middleware/rateLimitMiddleware.js";
 
 const app = express();
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
+
+app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
+app.use("/api", generalLimiter);
 
 app.use('/api/auth', authRoutes);
 app.use("/api/users", userRoutes);
@@ -39,4 +49,4 @@ app.use('/api/companies', companyRoutes);
 
 app.use(errorHandler);
 
-app.listen(process.env.PORT || 5000, () => console.log('Server running'));
+app.listen(process.env.PORT || 5000);

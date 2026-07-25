@@ -1,7 +1,7 @@
 import Application from "../models/Application.js";
 import User from "../models/User.js";
 import Interview from "../models/Interview.js";
-
+import Notification from "../models/Notification.js";
 // @desc    Dashboard stats - overall counts + status breakdown
 // @route   GET /api/analytics/dashboard
 // @access  Private (admin)
@@ -88,21 +88,60 @@ export const getApplicationsTrend = async (req, res, next) => {
   }
 };
 
-// @desc    Logged-in student's personal stats
+// analyticsController.js — updated getMyStats only
+
+// @desc    Logged-in student's personal dashboard stats
 // @route   GET /api/analytics/my-stats
 // @access  Private (student)
 export const getMyStats = async (req, res, next) => {
   try {
-    const applications = await Application.find({ user_id: req.user.id });
+    const userId = req.user.id;
 
+    // All applications for this user
+    const applications = await Application.find({ user_id: userId });
+    const applicationIds = applications.map((app) => app._id);
+    const totalApplications = applications.length;
+
+    // Status breakdown (for pie chart)
     const statusCount = {};
     applications.forEach((app) => {
       statusCount[app.status] = (statusCount[app.status] || 0) + 1;
     });
 
+    // Offers — pulled straight from status breakdown
+    const offers = statusCount["Offered"] || 0;
+
+    // Active interviews — Option B: upcoming, scheduled interviews
+    // tied to this user's applications (Interview has no user_id directly)
+    const activeInterviews = await Interview.countDocuments({
+      application_id: { $in: applicationIds },
+      interview_date: { $gte: new Date() },
+      status: "scheduled",
+    });
+
+    // Response rate = % of applications that moved past "Applied"
+    const respondedCount = totalApplications - (statusCount["Applied"] || 0);
+    const responseRate =
+      totalApplications > 0
+        ? Math.round((respondedCount / totalApplications) * 100)
+        : 0;
+
+    // Recent activity — last 5 notifications for this user
+    const recentActivity = await Notification.find({ user_id: userId })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("title message type createdAt");
+
     res.status(200).json({
       success: true,
-      stats: { totalApplications: applications.length, statusCount },
+      stats: {
+        totalApplications,
+        statusCount,
+        offers,
+        activeInterviews,
+        responseRate,
+        recentActivity,
+      },
     });
   } catch (error) {
     next(error);

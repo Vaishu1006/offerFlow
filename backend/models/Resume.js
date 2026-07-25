@@ -53,7 +53,7 @@ const resumeSchema = new mongoose.Schema(
 );
 
 resumeSchema.index(
-  { user_id: 1, version: 1 },
+  { user_id: 1,category:1, version: 1 },
   { unique: true }
 );
 

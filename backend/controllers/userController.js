@@ -51,9 +51,10 @@ export const getAllUsers = async (req, res, next) => {
 
     if (role) query.role = role;
     if (search) {
+      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       query.$or = [
-        { fullName: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
+        { fullName: { $regex: escapedSearch, $options: "i" } },
+        { email: { $regex: escapedSearch, $options: "i" } },
       ];
     }
 

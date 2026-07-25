@@ -76,7 +76,7 @@ const register = async (req, res, next) => {
       password,
       role: role || "student",
     });
-
+    const token=generateToken(user._id, user.role, res);
     return res.status(httpStatus.CREATED).json({
       success: true,
       message: "User registered successfully.",
@@ -86,6 +86,7 @@ const register = async (req, res, next) => {
         email: user.email,
         role: user.role,
       },
+      token
     });
   } catch (error) {
     next(error);

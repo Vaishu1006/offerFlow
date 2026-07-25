@@ -83,12 +83,7 @@ export const scheduleInterview = async (req, res, next) => {
     }
 
     // Create notification
-    try {
-  console.log("🔔 Notification block reached");
-  console.log("user_id:", application.user_id);
-  console.log("interview_id:", interview._id);
-  console.log("application_id:", application._id);
-  
+    try { 
   const notif = await Notification.create({
     user_id: application.user_id,
     type: "interview_scheduled",
@@ -100,11 +95,9 @@ export const scheduleInterview = async (req, res, next) => {
     application_id: application._id,
   });
   
-  console.log("✅ Notification saved:", notif._id);
 } catch (err) {
-  console.error("❌ Notification Error Message:", err.message);
-  console.error("❌ Notification Error Name:", err.name);
-  console.error("❌ Full Error:", err);
+  console.error("Notification Error Message:", err.message);
+ 
 }
     
     console.log("After notification");

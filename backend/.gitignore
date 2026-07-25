@@ -74,5 +74,15 @@ uploads/
 
 # Admin seed script (contains sensitive setup)
 utils/seedAdmin.js
+# Runtime files
+*.pid
 
-uploads/
+# Environment
+.envrc
+
+# Optional package manager
+.pnpm-store/
+
+# Mac
+.AppleDouble
+.LSOverride

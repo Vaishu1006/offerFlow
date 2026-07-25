@@ -14,7 +14,6 @@ export const uploadResume = async (req, res, next) => {
       folder: "internship-tracker/resumes",   // 👈 sirf yahi line change hui
       resource_type: "raw",
     });
-    console.log("Local file path:", req.file.path);
     fs.unlinkSync(req.file.path);
 
     const lastResume = await Resume.findOne({
@@ -34,11 +33,8 @@ export const uploadResume = async (req, res, next) => {
     });
 
     res.status(201).json({ success: true, resume });
-    console.log("UPLOAD SUCCESS");
   console.log(result);
   } catch (err) {
-    console.log("FULL CLOUDINARY ERROR:");
-  console.dir(err, { depth: null });
   throw err;
 }
 };

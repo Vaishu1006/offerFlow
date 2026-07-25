@@ -10,9 +10,9 @@ export const searchCompanies = asyncHandler(async (req, res) => {
     if (!query) {
         return res.json([]);
     }
-
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const companies = await Company.find({
-        name: { $regex: query, $options: "i" },
+        name: { $regex: escapedQuery, $options: "i" },
     }).limit(5);
 
     res.status(200).json(companies);
