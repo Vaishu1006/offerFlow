@@ -48,5 +48,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use('/api/companies', companyRoutes);
 
 app.use(errorHandler);
-
+app.get("/", (req, res) => {
+  res.send("OfferFlow Backend is running 🚀");
+});
 app.listen(process.env.PORT || 5000);
