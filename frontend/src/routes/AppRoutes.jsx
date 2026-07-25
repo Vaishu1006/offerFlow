@@ -30,8 +30,8 @@ export default function AppRoutes() {
         <Route path="/register" element={<Register />} />
       </Route>
 
-      {/* Protected routes — sidebar layout, any logged-in role */}
-      <Route element={<ProtectedRoute />}>
+      {/* Student-only routes */}
+      <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/applications" element={<Applications />} />
@@ -40,26 +40,26 @@ export default function AppRoutes() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/resumes" element={<Resumes />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
 
-      {/* Admin routes */}
+      {/* Admin-only routes */}
       <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route element={<MainLayout />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/companies" element={<CompanyManagement />} />
-        </Route>
-      </Route>
-
-      {/* Shared route — both roles can access */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<MainLayout />}>
-          <Route path="/profile" element={<Profile />} />
           <Route path="/admin/pending-applications" element={<PendingApplications />} />
           <Route path="/admin/users" element={<AllUsers />} />
         </Route>
       </Route>
+
+      {/* Shared route — any logged-in role (student or admin) */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MainLayout />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
