@@ -82,7 +82,7 @@ function DonutChart({ segments }) {
     </svg>
   );
 }
-
+console.log("Dashboard.jsx file loaded"); 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
