@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-
+console.log(import.meta.VITE_API_BASE_URL);
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

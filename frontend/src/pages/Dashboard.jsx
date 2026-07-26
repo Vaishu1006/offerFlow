@@ -90,6 +90,7 @@ export default function Dashboard() {
   const [showForm, setShowForm]=useState(false);
 
   useEffect(() => {
+    alert("Dashboard");
     async function loadDashboard() {
       try {
         const response = await getMyStats();
