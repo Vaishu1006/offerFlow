@@ -84,6 +84,7 @@ function DonutChart({ segments }) {
 }
 console.log("Dashboard.jsx file loaded"); 
 export default function Dashboard() {
+  console.log("Dashboard component RENDERING");
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
