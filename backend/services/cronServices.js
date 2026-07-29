@@ -4,7 +4,7 @@ import Notification from "../models/Notification.js";
 import { sendInterviewReminderEmail } from "./emailService.js";
 
 // Runs every hour
-cron.schedule("0 * * * *", async () => {
+cron.schedule("* * * * *", async () => {
   try {
 
     const now = new Date();

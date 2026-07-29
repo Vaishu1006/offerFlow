@@ -18,7 +18,7 @@ import aiRoutes from "./routes/aiRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
-import "./services/cronServices.js";
+// import "./services/cronServices.js"; // Email reminder cron — disabled in production (Gmail SMTP not production-grade; would use Resend/SendGrid with verified domain for real deployment)
 import { generalLimiter } from "./middleware/rateLimitMiddleware.js";
 
 const app = express();
