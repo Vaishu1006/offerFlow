@@ -5,6 +5,7 @@ import { timeAgo } from "../utils/formatDate";
 import ApplicationForm from "../components/application/ApplicationForm";
 import RejectionAnalysisChart from "../components/analytics/RejectionAnalysisChart";
 import ResumePerformanceChart from "../components/analytics/ResumePerformanceChart";
+import InterviewCalendar from "../components/interview/InterviewCalender";
 
 const STATUS_COLORS = {
   Selected: "var(--color-gold)",
@@ -89,7 +90,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm]=useState(false);
-
+  const [interviews, setInterviews] = useState([]);
   useEffect(() => {
     async function loadDashboard() {
       try {
@@ -107,7 +108,17 @@ export default function Dashboard() {
     }
     loadDashboard();
   }, []);
-
+  useEffect(() => {
+    async function loadInterviews() {
+      try {
+        const res = await getInterviews();
+        if (res.success) setInterviews(res.interviews ?? []);
+      } catch {
+        // silent fail — calendar khaali dikhega, koi crash nahi
+      }
+    }
+    loadInterviews();
+  }, []);
   function handleApplicationCreated(){
     setLoading(true);
     getMyStats().then((response)=>{
@@ -190,6 +201,7 @@ export default function Dashboard() {
             <p className="text-muted text-sm">No recent activity yet.</p>
           )}
         </div>
+
         <div className="bg-panel border border-border rounded-2xl p-6 mt-5">
           <h2 className="text-text font-semibold mb-1">Rejection Analysis</h2>
           <p className="text-muted text-sm mb-6">
@@ -197,14 +209,20 @@ export default function Dashboard() {
           </p>
           <RejectionAnalysisChart rejectionBreakdown={stats?.rejectionBreakdown} />
         </div>
-        <div className="bg-panel border border-border rounded-2xl p-6 mt-5">
-        <h2 className="text-text font-semibold mb-1">Resume Performance</h2>
-        <p className="text-muted text-sm mb-6">
-          See which resume version is converting applications into interview calls.
-        </p>
-        <ResumePerformanceChart resumeStats={stats?.resumeStats} />
-      </div>
 
+        <div className="bg-panel border border-border rounded-2xl p-6 mt-5">
+          <h2 className="text-text font-semibold mb-1">Resume Performance</h2>
+          <p className="text-muted text-sm mb-6">
+            See which resume version is converting applications into interview calls.
+          </p>
+          <ResumePerformanceChart resumeStats={stats?.resumeStats} />
+        </div>
+
+        <div className="bg-panel border border-border rounded-2xl p-6 mt-5">
+          <h2 className="text-text font-semibold mb-1">Interview Calendar</h2>
+          <p className="text-muted text-sm mb-6">Your scheduled interviews this month, at a glance.</p>
+          <InterviewCalendar interviews={interviews} />
+        </div>  
       </div>
 
       {showForm && (
