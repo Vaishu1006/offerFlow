@@ -87,6 +87,9 @@ export default function Sidebar() {
           <LogOut size={13} />
           Logout
         </button>
+        <p className="text-muted text-[10px] mt-4 text-center">
+          OfferFlow — Made by Vaishnavi
+        </p>
       </div>
     </aside>
   );
