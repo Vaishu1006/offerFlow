@@ -4,7 +4,7 @@ import { getMyStats } from "../api/analyticsApi";
 import { timeAgo } from "../utils/formatDate";
 import ApplicationForm from "../components/application/ApplicationForm";
 import RejectionAnalysisChart from "../components/analytics/RejectionAnalysisChart";
-
+import ResumePerformanceChart from "../components/analytics/ResumePerformanceChart";
 
 const STATUS_COLORS = {
   Selected: "var(--color-gold)",
@@ -191,12 +191,20 @@ export default function Dashboard() {
           )}
         </div>
         <div className="bg-panel border border-border rounded-2xl p-6 mt-5">
-        <h2 className="text-text font-semibold mb-1">Rejection Analysis</h2>
+          <h2 className="text-text font-semibold mb-1">Rejection Analysis</h2>
+          <p className="text-muted text-sm mb-6">
+            Understand where you're losing out, so you know exactly what to improve.
+          </p>
+          <RejectionAnalysisChart rejectionBreakdown={stats?.rejectionBreakdown} />
+        </div>
+        <div className="bg-panel border border-border rounded-2xl p-6 mt-5">
+        <h2 className="text-text font-semibold mb-1">Resume Performance</h2>
         <p className="text-muted text-sm mb-6">
-          Understand where you're losing out, so you know exactly what to improve.
+          See which resume version is converting applications into interview calls.
         </p>
-        <RejectionAnalysisChart rejectionBreakdown={stats?.rejectionBreakdown} />
+        <ResumePerformanceChart resumeStats={stats?.resumeStats} />
       </div>
+
       </div>
 
       {showForm && (
