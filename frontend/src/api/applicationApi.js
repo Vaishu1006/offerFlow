@@ -25,8 +25,11 @@ export const getApplicationById = async (id) => {
   return data;
 };
 
-export const updateApplicationStatus = async (id, status) => {
-  const { data } = await axiosInstance.put(`/applications/${id}/status`, {status});
+export const updateApplicationStatus = async (id, status, rejection_reason) => {
+  const { data } = await axiosInstance.put(`/applications/${id}/status`, {
+    status,
+    ...(rejection_reason && { rejection_reason }),
+  });
   return data;
 };
 

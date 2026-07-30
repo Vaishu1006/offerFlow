@@ -9,6 +9,16 @@ import Badge from "../components/common/Badge";
 import StatusTimeline from "../components/application/StatusTimeline";
 import { formatDate } from "../utils/formatDate";
 import MatchScoreCard from "../components/ai/MatchScoreCard";
+
+const REJECTION_REASONS = [
+  "DSA",
+  "Communication",
+  "Resume",
+  "System Design",
+  "Projects",
+  "Unknown",
+];
+
 export default function ApplicationDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,6 +27,7 @@ export default function ApplicationDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
+  const [showRejectionPicker, setShowRejectionPicker] = useState(false); // 👈 naya
 
   useEffect(() => {
     load();
@@ -38,12 +49,13 @@ export default function ApplicationDetail() {
     }
   }
 
-  async function handleStatusChange(newStatus) {
+  async function handleStatusChange(newStatus, rejectionReason) {
     try {
       setActionLoading(true);
-      const res = await updateApplicationStatus(id, newStatus);
+      const res = await updateApplicationStatus(id, newStatus, rejectionReason);
       if (res.success) {
         setApplication(res.application);
+        setShowRejectionPicker(false);
       }
     } catch (err) {
       setError(err?.response?.data?.message || "Failed to update status");
@@ -82,6 +94,7 @@ export default function ApplicationDetail() {
     date_applied,
     resume_id,
     approval_status,
+    rejection_reason, // 👈 naya
   } = application;
 
   const companyName = company_id?.name ?? requested_company?.name ?? "Pending approval";
@@ -152,6 +165,13 @@ export default function ApplicationDetail() {
                 </a>
               </dd>
             </div>
+            {/* Rejection reason — sirf tab dikhega jab status Rejected ho aur reason set ho */}
+            {status === "Rejected" && rejection_reason && (
+              <div className="flex justify-between">
+                <dt className="text-muted">Rejection Reason</dt>
+                <dd className="text-coral">{rejection_reason}</dd>
+              </div>
+            )}
           </dl>
         </div>
 
@@ -172,7 +192,7 @@ export default function ApplicationDetail() {
               </button>
               <button
                 disabled={actionLoading}
-                onClick={() => handleStatusChange("Rejected")}
+                onClick={() => setShowRejectionPicker(true)} // 👈 seedha status change nahi, pehle picker khole
                 className="flex-1 bg-coral/10 border border-coral/40 hover:bg-coral/20 disabled:opacity-60 text-coral font-semibold text-sm py-2.5 rounded-lg transition"
               >
                 Rejected
@@ -181,11 +201,12 @@ export default function ApplicationDetail() {
           </div>
         )}
       </div>
-      {/* AI Match Score — naya section */}
+
+      {/* AI Match Score */}
       <div className="mb-6">
         <MatchScoreCard applicationId={application._id} />
       </div>
-      
+
       {/* Danger zone */}
       <div className="flex justify-end">
         <button
@@ -196,6 +217,38 @@ export default function ApplicationDetail() {
           Delete Application
         </button>
       </div>
+
+      {/* Rejection reason picker modal — naya */}
+      {showRejectionPicker && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+          <div className="bg-panel border border-border rounded-2xl w-full max-w-sm p-6">
+            <h2 className="text-text text-lg font-bold mb-1">Why was it rejected?</h2>
+            <p className="text-muted text-sm mb-5">
+              This helps track patterns in your Rejection Analysis.
+            </p>
+
+            <div className="space-y-2 mb-5">
+              {REJECTION_REASONS.map((reason) => (
+                <button
+                  key={reason}
+                  disabled={actionLoading}
+                  onClick={() => handleStatusChange("Rejected", reason)}
+                  className="w-full text-left px-4 py-2.5 rounded-lg border border-border hover:border-coral hover:bg-coral/10 text-text text-sm transition disabled:opacity-60"
+                >
+                  {reason}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setShowRejectionPicker(false)}
+              className="text-muted text-xs hover:text-text transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

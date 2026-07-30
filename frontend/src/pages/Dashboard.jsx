@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { getMyStats } from "../api/analyticsApi";
 import { timeAgo } from "../utils/formatDate";
 import ApplicationForm from "../components/application/ApplicationForm";
+import RejectionAnalysisChart from "../components/analytics/RejectionAnalysisChart";
+
 
 const STATUS_COLORS = {
   Selected: "var(--color-gold)",
@@ -82,16 +84,13 @@ function DonutChart({ segments }) {
     </svg>
   );
 }
-console.log("Dashboard.jsx file loaded"); 
 export default function Dashboard() {
-  console.log("Dashboard component RENDERING");
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm]=useState(false);
 
   useEffect(() => {
-    alert("Dashboard");
     async function loadDashboard() {
       try {
         const response = await getMyStats();
@@ -191,6 +190,13 @@ export default function Dashboard() {
             <p className="text-muted text-sm">No recent activity yet.</p>
           )}
         </div>
+        <div className="bg-panel border border-border rounded-2xl p-6 mt-5">
+        <h2 className="text-text font-semibold mb-1">Rejection Analysis</h2>
+        <p className="text-muted text-sm mb-6">
+          Understand where you're losing out, so you know exactly what to improve.
+        </p>
+        <RejectionAnalysisChart rejectionBreakdown={stats?.rejectionBreakdown} />
+      </div>
       </div>
 
       {showForm && (
