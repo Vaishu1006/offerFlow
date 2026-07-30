@@ -98,7 +98,10 @@ export const getMyStats = async (req, res, next) => {
     const userId = req.user.id;
 
     // All applications for this user
-    const applications = await Application.find({ user_id: userId });
+    const applications = await Application.find({ user_id: userId }).populate(
+      "resume_id",
+      "resume_name category"
+    );
     const applicationIds = applications.map((app) => app._id);
     const totalApplications = applications.length;
 
@@ -108,12 +111,33 @@ export const getMyStats = async (req, res, next) => {
       statusCount[app.status] = (statusCount[app.status] || 0) + 1;
     });
 
-    // 👇 Naya block — Rejection reason breakdown (for Rejection Analysis chart)
+    // Rejection reason breakdown (for Rejection Analysis chart)
     const rejectionBreakdown = {};
     applications.forEach((app) => {
       if (app.status === "Rejected" && app.rejection_reason) {
         rejectionBreakdown[app.rejection_reason] =
           (rejectionBreakdown[app.rejection_reason] || 0) + 1;
+      }
+    });
+
+    // 👇 Naya block — Resume-wise performance analytics
+    const interviewStages = [
+      "OA Scheduled",
+      "OA Cleared",
+      "Interview Round 1",
+      "Interview Round 2",
+      "HR Round",
+      "Selected",
+    ];
+    const resumeStats = {};
+    applications.forEach((app) => {
+      const category = app.resume_id?.category ?? "Unknown";
+      if (!resumeStats[category]) {
+        resumeStats[category] = { applied: 0, interviewCalls: 0 };
+      }
+      resumeStats[category].applied += 1;
+      if (interviewStages.includes(app.status)) {
+        resumeStats[category].interviewCalls += 1;
       }
     });
 
@@ -146,7 +170,8 @@ export const getMyStats = async (req, res, next) => {
       stats: {
         totalApplications,
         statusCount,
-        rejectionBreakdown, // 👈 response mein add kiya
+        rejectionBreakdown,
+        resumeStats, // 👈 response mein add kiya
         offers,
         activeInterviews,
         responseRate,
