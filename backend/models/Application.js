@@ -78,6 +78,20 @@ const applicationSchema = new mongoose.Schema(
       default: "Saved",
     },
 
+    // Only set when status is "Rejected" — used for Rejection Analysis dashboard
+    rejection_reason: {
+      type: String,
+      enum: [
+        "DSA",
+        "Communication",
+        "Resume",
+        "System Design",
+        "Projects",
+        "Unknown",
+      ],
+      default: null,
+    },
+    
     // Only populated if the company doesn't exist
     requested_company: {
       name: {

@@ -201,7 +201,7 @@ export const getApplicationById = async (req, res, next) => {
 // @access  Private
 export const updateApplicationStatus = async (req, res, next) => {
   try {
-    const { status } = req.body;
+    const { status, rejection_reason } = req.body; // 👈 rejection_reason bhi liya
 
     let application;
 
@@ -233,9 +233,15 @@ export const updateApplicationStatus = async (req, res, next) => {
     }
 
     application.status = status;
+
+    // 👇 Naya block — Rejected hone pe reason bhi save karo
+    if (status === "Rejected" && rejection_reason) {
+      application.rejection_reason = rejection_reason;
+    }
+
     await application.save();
 
-    // 👇 Naya block — Rejected hone pe interview-related notifications clean up karo
+    // Rejected hone pe interview-related notifications clean up karo
     if (status === "Rejected") {
       await Notification.deleteMany({
         application_id: application._id,

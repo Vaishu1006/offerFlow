@@ -108,6 +108,15 @@ export const getMyStats = async (req, res, next) => {
       statusCount[app.status] = (statusCount[app.status] || 0) + 1;
     });
 
+    // 👇 Naya block — Rejection reason breakdown (for Rejection Analysis chart)
+    const rejectionBreakdown = {};
+    applications.forEach((app) => {
+      if (app.status === "Rejected" && app.rejection_reason) {
+        rejectionBreakdown[app.rejection_reason] =
+          (rejectionBreakdown[app.rejection_reason] || 0) + 1;
+      }
+    });
+
     // Offers — pulled straight from status breakdown
     const offers = statusCount["Offered"] || 0;
 
@@ -137,6 +146,7 @@ export const getMyStats = async (req, res, next) => {
       stats: {
         totalApplications,
         statusCount,
+        rejectionBreakdown, // 👈 response mein add kiya
         offers,
         activeInterviews,
         responseRate,
